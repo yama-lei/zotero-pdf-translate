@@ -335,6 +335,73 @@
     </hbox>
   </groupbox>
   <groupbox>
+    <label><html:h2 data-l10n-id="pref-anki"></html:h2></label>
+    <checkbox
+      id="__addonRef__-anki-enabled"
+      data-l10n-id="pref-anki-enabled"
+      native="true"
+      preference="__prefsPrefix__.anki.enabled"
+    />
+    <hbox align="center">
+      <label data-l10n-id="pref-anki-endpoint"></label>
+      <html:input
+        id="__addonRef__-anki-endpoint"
+        type="text"
+        class="anki-setting"
+        preference="__prefsPrefix__.anki.endpoint"
+        style="min-width: 200px"
+      ></html:input>
+      <button
+        id="__addonRef__-anki-test"
+        data-l10n-id="pref-anki-test"
+        class="anki-setting"
+      ></button>
+    </hbox>
+    <hbox align="center">
+      <label data-l10n-id="pref-anki-deck"></label>
+      <menulist id="__addonRef__-anki-deck" class="anki-setting" style="min-width: 150px">
+        <menupopup id="__addonRef__-anki-deck-popup"></menupopup>
+      </menulist>
+      <label data-l10n-id="pref-anki-model"></label>
+      <menulist id="__addonRef__-anki-model" class="anki-setting" style="min-width: 150px">
+        <menupopup id="__addonRef__-anki-model-popup"></menupopup>
+      </menulist>
+      <button
+        id="__addonRef__-anki-refresh"
+        data-l10n-id="pref-anki-refresh"
+        class="anki-setting"
+      ></button>
+    </hbox>
+    <hbox align="center">
+      <label data-l10n-id="pref-anki-frontField"></label>
+      <html:input
+        id="__addonRef__-anki-frontField"
+        type="text"
+        class="anki-setting"
+        preference="__prefsPrefix__.anki.frontField"
+        style="min-width: 100px"
+      ></html:input>
+      <label data-l10n-id="pref-anki-backField"></label>
+      <html:input
+        id="__addonRef__-anki-backField"
+        type="text"
+        class="anki-setting"
+        preference="__prefsPrefix__.anki.backField"
+        style="min-width: 100px"
+      ></html:input>
+    </hbox>
+    <hbox align="center">
+      <label data-l10n-id="pref-anki-tags"></label>
+      <html:input
+        id="__addonRef__-anki-tags"
+        type="text"
+        class="anki-setting"
+        preference="__prefsPrefix__.anki.tags"
+        style="min-width: 200px"
+      ></html:input>
+    </hbox>
+  </groupbox>
+  <groupbox>
     <label><html:h2 data-l10n-id="pref-about"></html:h2></label>
     <label
       data-l10n-id="pref-about-version"

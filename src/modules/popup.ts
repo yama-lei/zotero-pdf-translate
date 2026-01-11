@@ -4,6 +4,7 @@ import { getString } from "../utils/locale";
 import { getPref, setPref } from "../utils/prefs";
 import { addTranslateTask, getLastTranslateTask } from "../utils/task";
 import { slice } from "../utils/str";
+import { addToAnkiWithFeedback } from "./anki";
 
 export function updateReaderPopup() {
   const popup = addon.data.popup.currentPopup;
@@ -30,6 +31,9 @@ export function updateReaderPopup() {
   const addToNoteButton = popup?.querySelector(
     `#${makeId("addtonote")}`,
   ) as HTMLDivElement;
+  const addToAnkiButton = popup?.querySelector(
+    `#${makeId("addtoanki")}`,
+  ) as HTMLDivElement;
 
   const updateHidden = (elem: HTMLElement, hidden: boolean) => {
     if (hidden) {
@@ -44,6 +48,7 @@ export function updateReaderPopup() {
     updateHidden(translateButton, true);
     updateHidden(textarea, true);
     updateHidden(addToNoteButton, true);
+    if (addToAnkiButton) updateHidden(addToAnkiButton, true);
     return;
   }
   const task = getLastTranslateTask({ type: "text" });
@@ -101,6 +106,13 @@ export function updateReaderPopup() {
     !enableAddToNote
   ) {
     updateHidden(addToNoteButton, true);
+  }
+
+
+  if (addToAnkiButton) {
+    const enableAnki = getPref("anki.enabled") as boolean;
+    const hasTranslation = task.status === "success" && task.result;
+    updateHidden(addToAnkiButton, !enableAnki || !hasTranslation);
   }
 
   updatePopupSize(popup, textarea);
@@ -310,6 +322,50 @@ export function buildReaderPopup(
                 }
                 // @ts-ignore should be fixed in the zotero-types
                 reader._addToNote([annotation]);
+              },
+            },
+          ],
+        },
+        {
+          tag: "button",
+          namespace: "html",
+          id: makeId("addtoanki"),
+          classList: [
+            "toolbar-button",
+            "wide-button",
+            `${config.addonRef}-readerpopup`,
+          ],
+          styles: {
+            marginTop: "4px",
+          },
+          properties: {
+            innerHTML: `${SVGIcon}${getString("readerpopup-addToAnki-label")}`,
+          },
+          ignoreIfExists: true,
+          listeners: [
+            {
+              type: "click",
+              listener: async () => {
+                const task = getLastTranslateTask({ type: "text" });
+                if (task && task.status === "success") {
+                  await addToAnkiWithFeedback(task);
+                } else {
+                  const newTask = addTranslateTask(
+                    addon.data.translate.selectedText,
+                    reader.itemID,
+                    "addtoanki",
+                  );
+                  if (!newTask) {
+                    return;
+                  }
+                  await addon.hooks.onTranslate(newTask, {
+                    noCheckZoteroItemLanguage: true,
+                    noDisplay: true,
+                  });
+                  if (newTask.status === "success") {
+                    await addToAnkiWithFeedback(newTask);
+                  }
+                }
               },
             },
           ],

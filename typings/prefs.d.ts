@@ -106,6 +106,15 @@ declare namespace _ZoteroTypes {
       "nllb.apiendpoint": string;
       "nllb.apistream": boolean;
       "nllb.serveendpoint": string;
+      "anki.enabled": boolean;
+      "anki.endpoint": string;
+      "anki.deckName": string;
+      "anki.modelName": string;
+      "anki.frontField": string;
+      "anki.backField": string;
+      "anki.tags": string;
+      "anki.cachedDecks": string;
+      "anki.cachedModels": string;
     };
   }
 }

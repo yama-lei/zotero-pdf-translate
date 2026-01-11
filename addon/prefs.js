@@ -125,3 +125,14 @@ pref("__prefsPrefix__.nllb.model", "nllb-api");
 pref("__prefsPrefix__.nllb.apiendpoint", "http://localhost:7860");
 pref("__prefsPrefix__.nllb.apistream", true);
 pref("__prefsPrefix__.nllb.serveendpoint", "http://localhost:6060");
+
+// Anki Integration Settings
+pref("__prefsPrefix__.anki.enabled", true);
+pref("__prefsPrefix__.anki.endpoint", "http://127.0.0.1:8765");
+pref("__prefsPrefix__.anki.deckName", "Default");
+pref("__prefsPrefix__.anki.modelName", "Basic");
+pref("__prefsPrefix__.anki.frontField", "Front");
+pref("__prefsPrefix__.anki.backField", "Back");
+pref("__prefsPrefix__.anki.tags", "zotero,translate");
+pref("__prefsPrefix__.anki.cachedDecks", "[]");
+pref("__prefsPrefix__.anki.cachedModels", "[]");

@@ -132,3 +132,24 @@ pref-about-version =
 
 pref-advanced-stripEmptyLines =
     .label = Strip empty lines and thinking from translation results
+
+pref-anki = Anki Integration
+
+pref-anki-enabled =
+    .label = Enable Anki Integration (AnkiConnect required)
+pref-anki-endpoint =
+    .value = AnkiConnect URL
+pref-anki-deck =
+    .value = Deck
+pref-anki-model =
+    .value = Note Type
+pref-anki-frontField =
+    .value = Front Field
+pref-anki-backField =
+    .value = Back Field
+pref-anki-tags =
+    .value = Tags (comma-separated)
+pref-anki-refresh =
+    .label = Refresh from Anki
+pref-anki-test =
+    .label = Test Connection

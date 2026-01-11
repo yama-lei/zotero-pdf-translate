@@ -15,7 +15,7 @@ pref-basic-annotationTranslationInBody =
 pref-basic-enableAnnotationFromSyncTranslation =
     .label = 自动翻译来自同步的注释
 pref-basic-enableNote =
-    .label = 在弹窗中显示“添加翻译至笔记”
+    .label = 在弹窗中显示"添加翻译至笔记"
 pref-basic-enableNoteReplaceMode =
     .label = 添加翻译至笔记时替换原始文本
 pref-basic-enableAutoTagAnnotation =
@@ -132,4 +132,25 @@ pref-about-version =
 
 pref-advanced-stripEmptyLines =
     .label = 从翻译结果中删除空行和思考内容
+
+pref-anki = Anki 集成
+
+pref-anki-enabled =
+    .label = 启用 Anki 集成（需要 AnkiConnect 插件）
+pref-anki-endpoint =
+    .value = AnkiConnect 地址
+pref-anki-deck =
+    .value = 牌组
+pref-anki-model =
+    .value = 笔记类型
+pref-anki-frontField =
+    .value = 正面字段
+pref-anki-backField =
+    .value = 背面字段
+pref-anki-tags =
+    .value = 标签（逗号分隔）
+pref-anki-refresh =
+    .label = 从 Anki 刷新
+pref-anki-test =
+    .label = 测试连接
 

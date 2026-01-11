@@ -1,3 +1,13 @@
+> I've added AnkiConnect support to this Zotero plugin. This version is fully compatible with v7 (my current version), and likely v8 as well. I originally forked the main branch—which targets v8—by mistake to develop for my v7.0.30, but after updating the version requirement in [addon/manifest.json](addon/manifest.json) to 7.0.0 and building the plugin, everything works perfectly!
+>
+> If you need AnkiConnect support, just clone the repo and build the plugin yourself.
+>
+> ![Demo: Add to Anki Button](https://yamapicgo.oss-cn-nanjing.aliyuncs.com/picgoImage/20260111184957.png)  
+> ![Demo: Anki Settings Page](https://yamapicgo.oss-cn-nanjing.aliyuncs.com/picgoImage/20260111185121.png)
+> **Other plugins that support anki-connect**:
+>
+> - https://github.com/1ywan/zotero-odh
+
 # ![Translate for Zotero](addon/chrome/content/icons/favicon.png)Translate for Zotero
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7/8-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)

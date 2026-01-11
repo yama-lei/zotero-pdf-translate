@@ -5,6 +5,12 @@ import { getPref, setPref } from "../utils/prefs";
 import { setServiceSecret, validateServiceSecret } from "../utils/secret";
 import { createServiceSettingsDialog } from "../utils";
 import { services } from "./services";
+import {
+  checkAnkiConnection,
+  refreshAnkiConfig,
+  getCachedDeckNames,
+  getCachedModelNames,
+} from "./anki";
 
 export function registerPrefsWindow() {
   Zotero.PreferencePanes.register({
@@ -269,6 +275,55 @@ function buildPrefsPane() {
     ?.addEventListener("command", (e: Event) => {
       onPrefsEvents("setEnableAutoTagAnnotation");
     });
+
+  // Anki Integration settings
+  doc
+    .querySelector(`#${makeId("anki-enabled")}`)
+    ?.addEventListener("command", (e: Event) => {
+      onPrefsEvents("setAnkiEnabled");
+    });
+
+  doc
+    .querySelector(`#${makeId("anki-test")}`)
+    ?.addEventListener("command", async () => {
+      try {
+        const connected = await checkAnkiConnection();
+        addon.data.prefs.window?.alert(
+          connected
+            ? getString("anki-progress-success")
+            : getString("anki-error-connection"),
+        );
+      } catch {
+        addon.data.prefs.window?.alert(getString("anki-error-connection"));
+      }
+    });
+
+  doc
+    .querySelector(`#${makeId("anki-refresh")}`)
+    ?.addEventListener("command", async () => {
+      try {
+        await refreshAnkiConfig();
+        updateAnkiMenus();
+        addon.data.prefs.window?.alert("Anki configuration refreshed!");
+      } catch (e) {
+        addon.data.prefs.window?.alert(
+          `Failed to refresh: ${e instanceof Error ? e.message : String(e)}`,
+        );
+      }
+    });
+
+  doc.querySelector(`#${makeId("anki-deck")}`)?.addEventListener("command", () => {
+    const menulist = doc.querySelector(`#${makeId("anki-deck")}`) as XUL.MenuList;
+    setPref("anki.deckName", menulist.value);
+  });
+
+  doc.querySelector(`#${makeId("anki-model")}`)?.addEventListener("command", () => {
+    const menulist = doc.querySelector(`#${makeId("anki-model")}`) as XUL.MenuList;
+    setPref("anki.modelName", menulist.value);
+  });
+
+  // Initialize Anki menus
+  updateAnkiMenus();
 }
 
 function updatePrefsPaneDefault() {
@@ -279,6 +334,7 @@ function updatePrefsPaneDefault() {
   onPrefsEvents("setSentenceSecret", false);
   onPrefsEvents("setWordSecret", false);
   onPrefsEvents("setEnableAutoTagAnnotation", false);
+  onPrefsEvents("setAnkiEnabled", false);
 }
 
 function onPrefsEvents(type: string, fromElement: boolean = true) {
@@ -511,6 +567,16 @@ function onPrefsEvents(type: string, fromElement: boolean = true) {
         );
       }
       break;
+    case "setAnkiEnabled":
+      {
+        const elemValue = fromElement
+          ? (doc.querySelector(`#${makeId("anki-enabled")}`) as XUL.Checkbox)
+              .checked
+          : (getPref("anki.enabled") as boolean);
+        const disabled = !elemValue;
+        setDisabled("anki-setting", disabled);
+      }
+      break;
     default:
       return;
   }
@@ -518,4 +584,61 @@ function onPrefsEvents(type: string, fromElement: boolean = true) {
 
 function makeId(type: string) {
   return `${config.addonRef}-${type}`;
+}
+
+function updateAnkiMenus() {
+  const doc = addon.data.prefs.window?.document;
+  if (!doc) return;
+
+  const decks = getCachedDeckNames();
+  const models = getCachedModelNames();
+
+  const currentDeck = (getPref("anki.deckName") as string) || "Default";
+  const currentModel = (getPref("anki.modelName") as string) || "Basic";
+
+  // Update deck menu
+  const deckPopup = doc.querySelector(`#${makeId("anki-deck-popup")}`);
+  if (deckPopup) {
+    deckPopup.innerHTML = "";
+    const deckList = decks.length > 0 ? decks : ["Default"];
+    deckList.forEach((deck) => {
+      const menuitem = doc.createElementNS(
+        "http://www.mozilla.org/keymaster/gatekeeper/there.is" +
+          ".only.xul",
+        "menuitem",
+      ) as XUL.MenuItem;
+      menuitem.setAttribute("label", deck);
+      menuitem.setAttribute("value", deck);
+      deckPopup.appendChild(menuitem);
+    });
+    const deckMenulist = doc.querySelector(
+      `#${makeId("anki-deck")}`,
+    ) as XUL.MenuList;
+    if (deckMenulist) {
+      deckMenulist.value = currentDeck;
+    }
+  }
+
+  // Update model menu
+  const modelPopup = doc.querySelector(`#${makeId("anki-model-popup")}`);
+  if (modelPopup) {
+    modelPopup.innerHTML = "";
+    const modelList = models.length > 0 ? models : ["Basic"];
+    modelList.forEach((model) => {
+      const menuitem = doc.createElementNS(
+        "http://www.mozilla.org/keymaster/gatekeeper/there.is" +
+          ".only.xul",
+        "menuitem",
+      ) as XUL.MenuItem;
+      menuitem.setAttribute("label", model);
+      menuitem.setAttribute("value", model);
+      modelPopup.appendChild(menuitem);
+    });
+    const modelMenulist = doc.querySelector(
+      `#${makeId("anki-model")}`,
+    ) as XUL.MenuList;
+    if (modelMenulist) {
+      modelMenulist.value = currentModel;
+    }
+  }
 }

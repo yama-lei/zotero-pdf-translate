@@ -163,3 +163,12 @@ service-nllb-dialog-serveendpoint=nllb-serve 接口
 service-nllb-dialog-apilabel=nllb-api 文档
 service-nllb-dialog-servelabel=nllb-serve 文档
 
+# Anki 集成
+readerpopup-addToAnki-label=添加到 Anki
+anki-progress-title=Anki
+anki-progress-adding=正在添加到 Anki...
+anki-progress-success=成功添加到 Anki！
+anki-progress-failed=添加到 Anki 失败
+anki-error-no-translation=没有可用的翻译结果
+anki-error-connection=无法连接到 AnkiConnect，请确保 Anki 正在运行且已安装 AnkiConnect 插件
+anki-error-duplicate=此卡片在 Anki 中已存在

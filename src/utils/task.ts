@@ -13,7 +13,7 @@ export interface TranslateTask {
   /**
    * Task type.
    */
-  type: "text" | "annotation" | "title" | "abstract" | "addtonote" | "custom";
+  type: "text" | "annotation" | "title" | "abstract" | "addtonote" | "addtoanki" | "custom";
   /**
    * Raw text for translation.
    */

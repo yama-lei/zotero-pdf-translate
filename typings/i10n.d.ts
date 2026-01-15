@@ -4,6 +4,7 @@
 // @ts-nocheck
 export type FluentMessageId =
   | 'add-source'
+  | 'anki-enable-confirm'
   | 'anki-error-connection'
   | 'anki-error-duplicate'
   | 'anki-error-no-translation'

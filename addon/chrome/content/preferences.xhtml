@@ -6,7 +6,9 @@
   onload="Zotero.__addonInstance__.hooks.onPrefsLoad(event)"
 >
   <groupbox>
-    <label><html:h2 data-l10n-id="pref-general"></html:h2></label>
+    <label>
+      <html:h2 data-l10n-id="pref-general"></html:h2>
+    </label>
     <checkbox
       id="__addonRef__-enableAuto"
       data-l10n-id="pref-basic-enableAuto"
@@ -113,7 +115,9 @@
     </vbox>
   </groupbox>
   <groupbox>
-    <label><html:h2 data-l10n-id="pref-service"></html:h2></label>
+    <label>
+      <html:h2 data-l10n-id="pref-service"></html:h2>
+    </label>
     <hbox align="center">
       <label data-l10n-id="pref-service-sentenceServices"></label>
       <!-- Replace -->
@@ -162,7 +166,9 @@
     </hbox>
   </groupbox>
   <groupbox>
-    <label><html:h2 data-l10n-id="pref-interface"></html:h2></label>
+    <label>
+      <html:h2 data-l10n-id="pref-interface"></html:h2>
+    </label>
     <hbox align="center">
       <label data-l10n-id="pref-interface-fontSize"></label>
       <html:input
@@ -263,7 +269,9 @@
     />
   </groupbox>
   <groupbox>
-    <label><html:h2 data-l10n-id="pref-advanced"></html:h2></label>
+    <label>
+      <html:h2 data-l10n-id="pref-advanced"></html:h2>
+    </label>
     <hbox align="center">
       <checkbox
         data-l10n-id="pref-advanced-stripEmptyLines"
@@ -335,74 +343,88 @@
     </hbox>
   </groupbox>
   <groupbox>
-    <label><html:h2 data-l10n-id="pref-anki"></html:h2></label>
+    <label>
+      <html:h2 data-l10n-id="pref-anki"></html:h2>
+    </label>
     <checkbox
       id="__addonRef__-anki-enabled"
       data-l10n-id="pref-anki-enabled"
       native="true"
       preference="__prefsPrefix__.anki.enabled"
     />
-    <hbox align="center">
-      <label data-l10n-id="pref-anki-endpoint"></label>
-      <html:input
-        id="__addonRef__-anki-endpoint"
-        type="text"
-        class="anki-setting"
-        preference="__prefsPrefix__.anki.endpoint"
-        style="min-width: 200px"
-      ></html:input>
-      <button
-        id="__addonRef__-anki-test"
-        data-l10n-id="pref-anki-test"
-        class="anki-setting"
-      ></button>
-    </hbox>
-    <hbox align="center">
-      <label data-l10n-id="pref-anki-deck"></label>
-      <menulist id="__addonRef__-anki-deck" class="anki-setting" style="min-width: 150px">
-        <menupopup id="__addonRef__-anki-deck-popup"></menupopup>
-      </menulist>
-      <label data-l10n-id="pref-anki-model"></label>
-      <menulist id="__addonRef__-anki-model" class="anki-setting" style="min-width: 150px">
-        <menupopup id="__addonRef__-anki-model-popup"></menupopup>
-      </menulist>
-      <button
-        id="__addonRef__-anki-refresh"
-        data-l10n-id="pref-anki-refresh"
-        class="anki-setting"
-      ></button>
-    </hbox>
-    <hbox align="center">
-      <label data-l10n-id="pref-anki-frontField"></label>
-      <html:input
-        id="__addonRef__-anki-frontField"
-        type="text"
-        class="anki-setting"
-        preference="__prefsPrefix__.anki.frontField"
-        style="min-width: 100px"
-      ></html:input>
-      <label data-l10n-id="pref-anki-backField"></label>
-      <html:input
-        id="__addonRef__-anki-backField"
-        type="text"
-        class="anki-setting"
-        preference="__prefsPrefix__.anki.backField"
-        style="min-width: 100px"
-      ></html:input>
-    </hbox>
-    <hbox align="center">
-      <label data-l10n-id="pref-anki-tags"></label>
-      <html:input
-        id="__addonRef__-anki-tags"
-        type="text"
-        class="anki-setting"
-        preference="__prefsPrefix__.anki.tags"
-        style="min-width: 200px"
-      ></html:input>
-    </hbox>
+    <vbox id="__addonRef__-anki-setting-container" hidden="true">
+      <hbox align="center">
+        <label data-l10n-id="pref-anki-endpoint"></label>
+        <html:input
+          id="__addonRef__-anki-endpoint"
+          type="text"
+          class="anki-setting"
+          preference="__prefsPrefix__.anki.endpoint"
+          style="min-width: 200px"
+        ></html:input>
+        <button
+          id="__addonRef__-anki-test"
+          data-l10n-id="pref-anki-test"
+          class="anki-setting"
+        ></button>
+      </hbox>
+      <hbox align="center">
+        <label data-l10n-id="pref-anki-deck"></label>
+        <menulist
+          id="__addonRef__-anki-deck"
+          class="anki-setting"
+          style="min-width: 150px"
+        >
+          <menupopup id="__addonRef__-anki-deck-popup"></menupopup>
+        </menulist>
+        <label data-l10n-id="pref-anki-model"></label>
+        <menulist
+          id="__addonRef__-anki-model"
+          class="anki-setting"
+          style="min-width: 150px"
+        >
+          <menupopup id="__addonRef__-anki-model-popup"></menupopup>
+        </menulist>
+        <button
+          id="__addonRef__-anki-refresh"
+          data-l10n-id="pref-anki-refresh"
+          class="anki-setting"
+        ></button>
+      </hbox>
+      <hbox align="center">
+        <label data-l10n-id="pref-anki-frontField"></label>
+        <menulist
+          id="__addonRef__-anki-frontField"
+          class="anki-setting"
+          style="min-width: 150px"
+        >
+          <menupopup id="__addonRef__-anki-frontField-popup"></menupopup>
+        </menulist>
+        <label data-l10n-id="pref-anki-backField"></label>
+        <menulist
+          id="__addonRef__-anki-backField"
+          class="anki-setting"
+          style="min-width: 150px"
+        >
+          <menupopup id="__addonRef__-anki-backField-popup"></menupopup>
+        </menulist>
+      </hbox>
+      <hbox align="center">
+        <label data-l10n-id="pref-anki-tags"></label>
+        <html:input
+          id="__addonRef__-anki-tags"
+          type="text"
+          class="anki-setting"
+          preference="__prefsPrefix__.anki.tags"
+          style="min-width: 200px"
+        ></html:input>
+      </hbox>
+    </vbox>
   </groupbox>
   <groupbox>
-    <label><html:h2 data-l10n-id="pref-about"></html:h2></label>
+    <label>
+      <html:h2 data-l10n-id="pref-about"></html:h2>
+    </label>
     <label
       data-l10n-id="pref-about-version"
       data-l10n-args='{"time": "__buildTime__","name": "__addonName__","version":"__buildVersion__"}'

@@ -10,6 +10,7 @@ import {
   refreshAnkiConfig,
   getCachedDeckNames,
   getCachedModelNames,
+  getFieldsForModel,
 } from "./anki";
 
 export function registerPrefsWindow() {
@@ -279,7 +280,29 @@ function buildPrefsPane() {
   // Anki Integration settings
   doc
     .querySelector(`#${makeId("anki-enabled")}`)
-    ?.addEventListener("command", (e: Event) => {
+    ?.addEventListener("command", async () => {
+      const checkbox = doc.querySelector(
+        `#${makeId("anki-enabled")}`,
+      ) as XUL.Checkbox;
+
+      if (checkbox.checked) {
+        const confirmed =
+          addon.data.prefs.window?.confirm(getString("anki-enable-confirm")) ??
+          true;
+        if (!confirmed) {
+          checkbox.checked = false;
+          setPref("anki.enabled", false);
+          onPrefsEvents("setAnkiEnabled");
+          return;
+        }
+
+        setPref("anki.enabled", true);
+        onPrefsEvents("setAnkiEnabled");
+        await refreshAnkiConfigIfEnabled();
+        return;
+      }
+
+      setPref("anki.enabled", false);
       onPrefsEvents("setAnkiEnabled");
     });
 
@@ -304,6 +327,7 @@ function buildPrefsPane() {
       try {
         await refreshAnkiConfig();
         updateAnkiMenus();
+        await updateAnkiFieldMenus();
         addon.data.prefs.window?.alert("Anki configuration refreshed!");
       } catch (e) {
         addon.data.prefs.window?.alert(
@@ -312,18 +336,46 @@ function buildPrefsPane() {
       }
     });
 
-  doc.querySelector(`#${makeId("anki-deck")}`)?.addEventListener("command", () => {
-    const menulist = doc.querySelector(`#${makeId("anki-deck")}`) as XUL.MenuList;
-    setPref("anki.deckName", menulist.value);
-  });
+  doc
+    .querySelector(`#${makeId("anki-deck")}`)
+    ?.addEventListener("command", () => {
+      const menulist = doc.querySelector(
+        `#${makeId("anki-deck")}`,
+      ) as XUL.MenuList;
+      setPref("anki.deckName", menulist.value);
+    });
 
-  doc.querySelector(`#${makeId("anki-model")}`)?.addEventListener("command", () => {
-    const menulist = doc.querySelector(`#${makeId("anki-model")}`) as XUL.MenuList;
-    setPref("anki.modelName", menulist.value);
-  });
+  doc
+    .querySelector(`#${makeId("anki-model")}`)
+    ?.addEventListener("command", () => {
+      const menulist = doc.querySelector(
+        `#${makeId("anki-model")}`,
+      ) as XUL.MenuList;
+      setPref("anki.modelName", menulist.value);
+      void updateAnkiFieldMenus(menulist.value);
+    });
+
+  doc
+    .querySelector(`#${makeId("anki-frontField")}`)
+    ?.addEventListener("command", () => {
+      const menulist = doc.querySelector(
+        `#${makeId("anki-frontField")}`,
+      ) as XUL.MenuList;
+      setPref("anki.frontField", menulist.value);
+    });
+
+  doc
+    .querySelector(`#${makeId("anki-backField")}`)
+    ?.addEventListener("command", () => {
+      const menulist = doc.querySelector(
+        `#${makeId("anki-backField")}`,
+      ) as XUL.MenuList;
+      setPref("anki.backField", menulist.value);
+    });
 
   // Initialize Anki menus
   updateAnkiMenus();
+  void updateAnkiFieldMenus();
 }
 
 function updatePrefsPaneDefault() {
@@ -335,6 +387,7 @@ function updatePrefsPaneDefault() {
   onPrefsEvents("setWordSecret", false);
   onPrefsEvents("setEnableAutoTagAnnotation", false);
   onPrefsEvents("setAnkiEnabled", false);
+  void refreshAnkiConfigIfEnabled();
 }
 
 function onPrefsEvents(type: string, fromElement: boolean = true) {
@@ -574,6 +627,12 @@ function onPrefsEvents(type: string, fromElement: boolean = true) {
               .checked
           : (getPref("anki.enabled") as boolean);
         const disabled = !elemValue;
+        const container = doc.querySelector(
+          `#${makeId("anki-setting-container")}`,
+        ) as XUL.Element | null;
+        if (container) {
+          (container as XUL.Element & { hidden?: boolean }).hidden = disabled;
+        }
         setDisabled("anki-setting", disabled);
       }
       break;
@@ -603,8 +662,7 @@ function updateAnkiMenus() {
     const deckList = decks.length > 0 ? decks : ["Default"];
     deckList.forEach((deck) => {
       const menuitem = doc.createElementNS(
-        "http://www.mozilla.org/keymaster/gatekeeper/there.is" +
-          ".only.xul",
+        "http://www.mozilla.org/keymaster/gatekeeper/there.is" + ".only.xul",
         "menuitem",
       ) as XUL.MenuItem;
       menuitem.setAttribute("label", deck);
@@ -626,8 +684,7 @@ function updateAnkiMenus() {
     const modelList = models.length > 0 ? models : ["Basic"];
     modelList.forEach((model) => {
       const menuitem = doc.createElementNS(
-        "http://www.mozilla.org/keymaster/gatekeeper/there.is" +
-          ".only.xul",
+        "http://www.mozilla.org/keymaster/gatekeeper/there.is" + ".only.xul",
         "menuitem",
       ) as XUL.MenuItem;
       menuitem.setAttribute("label", model);
@@ -640,5 +697,89 @@ function updateAnkiMenus() {
     if (modelMenulist) {
       modelMenulist.value = currentModel;
     }
+  }
+}
+
+async function refreshAnkiConfigIfEnabled() {
+  const enabled = getPref("anki.enabled") as boolean;
+  if (!enabled) return;
+
+  try {
+    await refreshAnkiConfig();
+    updateAnkiMenus();
+    await updateAnkiFieldMenus();
+  } catch {
+    return;
+  }
+}
+
+async function updateAnkiFieldMenus(modelName?: string) {
+  const doc = addon.data.prefs.window?.document;
+  if (!doc) return;
+
+  const enabled = getPref("anki.enabled") as boolean;
+  if (!enabled && !modelName) return;
+
+  const currentModel = modelName || (getPref("anki.modelName") as string) || "";
+  const fields = await getFieldsForModel(currentModel);
+
+  const currentFront = (getPref("anki.frontField") as string) || "";
+  const currentBack = (getPref("anki.backField") as string) || "";
+
+  const frontValue =
+    (currentFront && fields.includes(currentFront) && currentFront) ||
+    fields[0] ||
+    "Front";
+  const backValue =
+    (currentBack && fields.includes(currentBack) && currentBack) ||
+    fields[1] ||
+    fields[0] ||
+    "Back";
+
+  const frontPopup = doc.querySelector(`#${makeId("anki-frontField-popup")}`);
+  if (frontPopup) {
+    frontPopup.innerHTML = "";
+    (fields.length ? fields : [frontValue]).forEach((field) => {
+      const menuitem = doc.createElementNS(
+        "http://www.mozilla.org/keymaster/gatekeeper/there.is" + ".only.xul",
+        "menuitem",
+      ) as XUL.MenuItem;
+      menuitem.setAttribute("label", field);
+      menuitem.setAttribute("value", field);
+      frontPopup.appendChild(menuitem);
+    });
+    const frontMenulist = doc.querySelector(
+      `#${makeId("anki-frontField")}`,
+    ) as XUL.MenuList;
+    if (frontMenulist) {
+      frontMenulist.value = frontValue;
+    }
+  }
+
+  const backPopup = doc.querySelector(`#${makeId("anki-backField-popup")}`);
+  if (backPopup) {
+    backPopup.innerHTML = "";
+    (fields.length ? fields : [backValue]).forEach((field) => {
+      const menuitem = doc.createElementNS(
+        "http://www.mozilla.org/keymaster/gatekeeper/there.is" + ".only.xul",
+        "menuitem",
+      ) as XUL.MenuItem;
+      menuitem.setAttribute("label", field);
+      menuitem.setAttribute("value", field);
+      backPopup.appendChild(menuitem);
+    });
+    const backMenulist = doc.querySelector(
+      `#${makeId("anki-backField")}`,
+    ) as XUL.MenuList;
+    if (backMenulist) {
+      backMenulist.value = backValue;
+    }
+  }
+
+  if ((getPref("anki.frontField") as string) !== frontValue) {
+    setPref("anki.frontField", frontValue);
+  }
+  if ((getPref("anki.backField") as string) !== backValue) {
+    setPref("anki.backField", backValue);
   }
 }

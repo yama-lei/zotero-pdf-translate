@@ -108,7 +108,6 @@ export function updateReaderPopup() {
     updateHidden(addToNoteButton, true);
   }
 
-
   if (addToAnkiButton) {
     const enableAnki = getPref("anki.enabled") as boolean;
     const hasTranslation = task.status === "success" && task.result;

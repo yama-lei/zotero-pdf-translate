@@ -169,6 +169,7 @@ anki-progress-title=Anki
 anki-progress-adding=Adding to Anki...
 anki-progress-success=Added to Anki successfully!
 anki-progress-failed=Failed to add to Anki
+anki-enable-confirm=Enable Anki integration?
 anki-error-no-translation=No translation available
 anki-error-connection=Cannot connect to AnkiConnect. Please make sure Anki is running with AnkiConnect plugin installed.
 anki-error-duplicate=This card already exists in Anki

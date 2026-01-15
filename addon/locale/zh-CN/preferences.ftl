@@ -144,13 +144,12 @@ pref-anki-deck =
 pref-anki-model =
     .value = 笔记类型
 pref-anki-frontField =
-    .value = 正面字段
+    .value = 单词填写字段
 pref-anki-backField =
-    .value = 背面字段
+    .value = 翻译填写字段
 pref-anki-tags =
     .value = 标签（逗号分隔）
 pref-anki-refresh =
     .label = 从 Anki 刷新
 pref-anki-test =
     .label = 测试连接
-
